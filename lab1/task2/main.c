@@ -4,6 +4,7 @@
 #include "errno.h"
 #include "stdlib.h"
 #include "math.h"
+#include "ctype.h"
 typedef long int li;
 
 enum status{
@@ -12,15 +13,29 @@ enum status{
     MEMORY_ERROR
 };
 
+int is_valid_double(const char* str) {
+    if (strlen(str) > 24){
+        return 0;
+    }
+    for (const char* p = str; *p; p++) {
+        if (!isdigit(*p) && *p != '.' && *p != '-' && *p != '+' && *p != 'e') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 enum status str_to_double(char* str, double* result){
-    char* end_ptr;
-    *result = strtod(str, &end_ptr);
-    if (errno == ERANGE && (*result == HUGE_VAL || *result == -HUGE_VAL))
+
+    if (!(is_valid_double(str))){
+        return INPUT_ERROR;
+    }
+    char *endptr;
+    *result = strtod(str, &endptr);
+    if ((*result == HUGE_VAL || *result == -HUGE_VAL))
     {
         return INPUT_ERROR;
-    } else if (errno == ERANGE && *result == 0) {
-        return INPUT_ERROR;
-    } else if (*end_ptr != '\0') {
+    } else if (*endptr != '\0') {
         return INPUT_ERROR;
     }
     return SUCCESS;
@@ -170,25 +185,20 @@ double rows_2(double eps){
 
 double rows_g(double epsilon)
 {
-    double previous = 0.0;
-    double current = 0.5;
-    int k = 2;
-    double l = 0.0;
+    double previous = 0;
+    double current = 0.0;
+    int k = 1;
+    double l = 0;
     do
     {
         previous = current;
-        ++k;
-        l = sqrt(k);
-        if (fmod(l,1.0) == 0)
-        {
-            k++;
-            l = (int)pow(k, 1.0/2.0);
-        }
-        current += 1.0/pow((int)l,2.0) - 1.0/k;
+        current += (1.0/k) - log(1.0 + 1.0 / k);
+        k++;
+
 
     } while (fabs(previous - current) >= epsilon);
 
-    return (current - pow(M_PI,2) / 6);
+    return (current);
 }
 
 double equation_e(double eps){

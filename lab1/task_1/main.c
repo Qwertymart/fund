@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "math.h"
+#include "limits.h"
 typedef long int li;
 
 enum status{
@@ -101,7 +102,11 @@ enum status func_f(li x, li* result){
     if(x<0){
         return INPUT_ERROR;
     }
+    *result = 1;
     for(li i = 2; i <= x; ++i){
+        if (*result > LONG_MAX / i) {
+            return MEMORY_ERROR;
+        }
         *result *= i;
     }
     return SUCCESS;
@@ -161,6 +166,7 @@ int main(int argc, char* argv[]){
             else if(f == DIVISION_BY_ZERO){
                 printf("Ошибка: деление на ноль невозможно.\n");
             }
+            break;
         }
         case 's':{
             size_t size = 17;
@@ -230,6 +236,9 @@ int main(int argc, char* argv[]){
                 printf("Ошибка: введено некорректно.\n");
             }
 
+            if (f == MEMORY_ERROR){
+                printf("Ошибка: слишком большое число.\n");
+            }
             else if (f == SUCCESS){
                 printf("Факториал %ld: %ld\n", x, result);
             }
