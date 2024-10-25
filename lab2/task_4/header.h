@@ -29,7 +29,7 @@ typedef struct {
 
 enum status convex(enum conv* result, int count, ...);
 enum status polynomial(double *result, double x, int n, ...);
-int is_valid_int(const char* str);
+int is_valid_int(const char* str, int base);
 enum status str_to_int(const char *str, int * result, int base);
 void int_to_str_base(int num, int base, char* str);
 enum status is_kaprekar(int num, int base, int *kaprekar);

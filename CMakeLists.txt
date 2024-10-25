@@ -45,4 +45,7 @@ add_executable(fund_
         lab2/task_8/main.c
         lab2/task_8/header.h
         lab2/task_8/functions.c
+        lab2/task_10/main.c
+        lab2/task_10/header.h
+        lab2/task_10/functions.c
 )

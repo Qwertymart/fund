@@ -77,7 +77,7 @@ int main(){
 
 
     double result_polinomial;
-    enum status f2 = polynomial(&result_polinomial, 2.0, 5, 1., 1., 1., 1., 1., 1.);
+    enum status f2 = polynomial(&result_polinomial, 2.0, 2, 2., 1., 3.);
     if (f2 == OVERFLOW_ERROR){
         printf("Ошибка: переполнение\n");
         return f2;
@@ -88,10 +88,18 @@ int main(){
     printf("__________________________________\n");
 
 
-    enum status f3 = find_kaprekar(10, 4, "45", "297", "4879", "26");
+    enum status f3 = find_kaprekar(10, 5, "A", "297", "4879", "1", "345678903456789021212333");
     if (f3 == OVERFLOW_ERROR){
         printf("Ошибка: переполнение\n");
-        return f3;
+    }
+    if (f3 == INPUT_ERROR){
+        printf("Ошибка: введено некорректно\n");
+    }
+    printf("\n");
+
+    enum status f4 = find_kaprekar(16, 5, "1", "0", "CCC", "4444", "45");
+    if (f4 == OVERFLOW_ERROR){
+        printf("Ошибка: переполнение\n");
     }
     if (f3 == INPUT_ERROR){
         printf("Ошибка: введено некорректно\n");

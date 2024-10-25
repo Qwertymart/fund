@@ -81,7 +81,6 @@ int oversscanf(char *str, const char* format, ...)
                 return count;
             }
             memcpy(mini_format, format + i   , diff);
-            printf("%s\n", mini_format);
             mini_format[diff] = '\0';
             int k = sscanf(str, mini_format, value);
             if (k < 0) {

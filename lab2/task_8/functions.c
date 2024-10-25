@@ -12,11 +12,14 @@ enum status sum(char ** result, int base, int count_values, ...)
     va_list args;
     va_start(args, count_values);
     char* number = va_arg(args, char*);
+
     if (number == NULL)
     {
+        va_end(args);
         return INPUT_ERROR;
     }
     int len_number = strlen(number);
+
 
     if (valid(base, number))
     {
@@ -34,6 +37,7 @@ enum status sum(char ** result, int base, int count_values, ...)
     int capacity_res = len_number * 2;
     int len_res = len_number;
 
+
     *result = (char *)calloc(sizeof(char), capacity_res);
     if((*result) == NULL)
     {
@@ -41,21 +45,24 @@ enum status sum(char ** result, int base, int count_values, ...)
         free(number_temp);
         return MEMORY_ERROR;
     }
-    strcpy(*result, number);
+    strcpy(*result, number_temp);
     free(number_temp);
 
-    for (int i = 1; i < count_values; ++i)
+    for (int i = 0; i < count_values - 1; ++i)
     {
         number = va_arg(args, char*);
 
         if (number == NULL)
         {
+            free((*result));
+            va_end(args);
             return INPUT_ERROR;
         }
          len_number = strlen(number);
 
         if (valid(base, number))
         {
+            free((*result));
             va_end(args);
             return INPUT_ERROR;
         }
@@ -63,10 +70,12 @@ enum status sum(char ** result, int base, int count_values, ...)
         if (number_temp == NULL)
         {
             va_end(args);
+            free((*result));
             return MEMORY_ERROR;
 
         }
         reverse(&number_temp, len_number);
+
         if (len_number + 1 > capacity_res || len_res + 1 > capacity_res)
         {
             int max = len_res > len_number ? len_res : len_number;
@@ -79,14 +88,17 @@ enum status sum(char ** result, int base, int count_values, ...)
                 return MEMORY_ERROR;
             }
             (*result) = for_realloc;
-
         }
-
+        sum_of_two_numbers(result, number_temp, base, &len_res, len_number);
+        free(number_temp);
     }
-
-
-
-
+    while (len_res > 1 && (*result)[len_res - 1] == '\0')
+    {
+        (*result)[--len_res] = '\0';
+    }
+    reverse(result, len_res);
+    va_end(args);
+    return SUCCESS;
 
 }
 
@@ -102,7 +114,10 @@ int valid(int base, char * number)
     {
         if(isalpha(number[i]))
         {
-            number[i] = (char)toupper(number[i]);
+            if(number[i] >= 'a' && number[i] <= 'z')
+            {
+                return 0;
+            }
             if(number[i]  - 'A' + 10 >= base)
             {
                 return 1;
@@ -134,16 +149,24 @@ void reverse(char ** number, int len)
 }
 
 
-void sum_of_two_numbers(char ** result, char * number, int base, int *len_res, int len_numbers)
-{
-    int len_sum = (*len_res > len_numbers) ? len_numbers : *len_res;
-    int next_digit = 0, index = 0;
-    for (; index < len_sum; ++index)
-    {
-        int n1 = isdigit((*result)[index]) ? (*result)[index] - '0' : (*result)[index] - 'A' + 10;
-        int n2 = isdigit(number[index]) ? number[index] - '0' : number[index] - 'A' + 10;
-        int sum = n1 + n2  + next_digit;
-        (*result)[index] = (sum % base) > 9 ? (sum % base) + 'A' - 10 : (sum % base) + '0';
-        next_digit = sum / base;
+void sum_of_two_numbers(char **result, char *number, int base, int *len_res, int len_number) {
+    int max_len = (*len_res > len_number) ? *len_res : len_number;
+    int carry = 0, i;
+
+    for (i = 0; i < max_len || carry; ++i) {
+        if (i >= *len_res) {
+            (*result)[i] = '0';
+            (*len_res)++;
+        }
+
+        int n1 = isdigit((*result)[i]) ? (*result)[i] - '0' : (*result)[i] - 'A' + 10;
+        int n2 = (i < len_number) ? (isdigit(number[i]) ? number[i] - '0' : number[i] - 'A' + 10) : 0;
+        int sum = n1 + n2 + carry;
+
+        (*result)[i] = (sum % base) < 10 ? (sum % base) + '0' : (sum % base) + 'A' - 10;
+        carry = sum / base;
     }
+
+    (*result)[i] = '\0';
+    *len_res = i;
 }

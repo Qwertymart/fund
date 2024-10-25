@@ -1,3 +1,4 @@
+
 #ifndef FUND__HEADER_H
 #define FUND__HEADER_H
 
@@ -13,15 +14,12 @@
 typedef long int li;
 #define EPS 1e-6
 
-enum status {
-    INPUT_ERROR, SUCCESS,
+enum status{
+     SUCCESS, INPUT_ERROR,
     DIVISION_BY_ZERO, ERROR_OPEN,
-    MEMORY_ERROR
+    MEMORY_ERROR, OVERFLOW_ERROR
 };
 
-int valid(int base, char * number);
-void reverse(char ** number, int len);
-void sum_of_two_numbers(char ** result, char * number, int base, int *len_res, int len_numbers);
-enum status sum(char ** result, int base, int count_values, ...);
+enum status polynomial(double a, double **coef, int degree, ...);
 
 #endif //FUND__HEADER_H

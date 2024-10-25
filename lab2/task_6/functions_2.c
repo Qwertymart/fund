@@ -56,7 +56,6 @@ int Zr(char* str, char format_end, int* index_plus) {
                     fib_value = previous_2;
 
                 }
-                printf("%d   %d\n", i, result);
             }
         }
         else{

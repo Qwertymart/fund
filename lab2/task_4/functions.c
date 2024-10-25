@@ -68,10 +68,18 @@ enum status polynomial(double *result, double x, int n, ...)
 }
 
 
-int is_valid_int(const char* str) {
-
+int is_valid_int(const char* str, int base) {
     for (const char* p = str; *p; p++) {
+        if (isalpha(*p)) {
+            if (base <= 10 || (*p - 'A' + 10 >= base)) {
+                return 0;
+            }
+            continue;
+        }
         if (!isdigit(*p) && *p != '-' && *p != '+') {
+            return 0;
+        }
+        if (isdigit(*p) && (*p - '0' >= base)) {
             return 0;
         }
     }
@@ -80,7 +88,7 @@ int is_valid_int(const char* str) {
 
 enum status str_to_int(const char *str, int * result, int base)
 {
-    if (!(is_valid_int(str))){
+    if (!(is_valid_int(str, base))){
         return INPUT_ERROR;
     }
     size_t len = strlen(str);
@@ -121,8 +129,8 @@ void int_to_str_base(int num, int base, char* str)
 
 enum status is_kaprekar(int num, int base, int *kaprekar)
 {
-    if (num == 0) {
-        *kaprekar = 0;
+    if (num == 0 || num == 1) {
+        *kaprekar = num;
         return SUCCESS;
     }
 
@@ -168,15 +176,25 @@ enum status find_kaprekar(int base, int num_args, ...)
     for (int i = 0; i < num_args; i++) {
         char* str_num = va_arg(args, char*);
 
-        int num = strtol(str_num, NULL, base);
+        int num;
+        enum status status_code = str_to_int(str_num, &num, base);
+
+
+        if (status_code == INPUT_ERROR) {
+            printf("%s Ошибка ввода\n", str_num);
+            continue;
+        }
+        if (status_code == OVERFLOW_ERROR) {
+            printf("%s Переполнение\n", str_num);
+            continue;
+        }
         int kaprekar = 0;
         enum status f = is_kaprekar(num, base, &kaprekar);
         if (f == INPUT_ERROR){
-            va_end(args);
-            return INPUT_ERROR;
+            continue;
         }
         if (f == OVERFLOW_ERROR){
-            return OVERFLOW_ERROR;
+            continue;
         }
 
         if (kaprekar){
