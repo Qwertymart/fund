@@ -68,6 +68,8 @@ int parse_time(const char* time, struct tm *tm_time, time_t* t);
 void list_not_delivered_mail(const Post* post);
 
 enum status str_to_int(const char *str, int * result);
+int is_valid_int(const char* str);
+int is_valid_date(const char* str);
 enum status str_to_double(char* str, double* result);
 int valid_date(int day, int month, int year, int hour, int minute, int second);
 int compare_date(int day1, int month1, int year1, int hour1, int minute1, int second1,

@@ -14,7 +14,7 @@ int valid_date(int day, int month, int year, int hour, int minute, int second)
     {
         return 0;
     }
-    if (year < 1900)
+    if (year > 9999)
     {
         return 0;
     }
@@ -69,10 +69,22 @@ int is_valid_double(const char* str) {
     return 1;
 }
 
-int is_valid_int(const char* str) {
+int is_valid_int(const char* str)
+{
 
     for (const char* p = str; *p; p++) {
         if (!isdigit(*p) && *p != '-' && *p != '+') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int is_valid_date(const char* str)
+{
+
+    for (const char* p = str; *p; p++) {
+        if (!isdigit(*p) && *p!=' ' && *p != ':' && *p != '\r' && *p != '\n') {
             return 0;
         }
     }

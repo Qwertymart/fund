@@ -9,7 +9,6 @@ int main()
         printf("Memory error\n");
         return MEMORY_ERROR;
     }
-    int count;
     enum status f = convert_to_base (111, 2, &res, &capacity);
 
     if (f == MEMORY_ERROR)

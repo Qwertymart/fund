@@ -7,6 +7,18 @@ int main(int argc, char* argv[])
         printf("Incorrect count arguments\n");
         return INPUT_ERROR;
     }
+    char* ind1 = strrchr(argv[1], '/');
+    char* ind2 = strrchr(argv[3], '/');
+    int index_1 = 0, index_2 = 0;
+
+    if (ind1 != NULL) index_1 = ind1 - argv[1] + 1;
+    if (ind2 != NULL) index_2 = ind2 - argv[3] + 1;
+
+    if (strcmp(argv[1] + index_1, argv[3] + index_2) == 0){
+        printf("Identical file names\n");
+        return INPUT_ERROR;
+    }
+
     FILE *input_file = fopen(argv[1], "r");
     if (input_file == NULL)
     {
@@ -26,20 +38,13 @@ int main(int argc, char* argv[])
     Employee temp;
     int flag;
     char name_temp[51], surname_temp[51], id_temp[15], salary_temp[20];
-    while((flag = fscanf(input_file, "%s %s %s %s", id_temp, name_temp, surname_temp, salary_temp)) != EOF)
+    while((flag = fscanf(input_file, "%15s %51s %51s %20s", id_temp, name_temp, surname_temp, salary_temp)) != EOF)
     {
         if (flag == 4)
         {
             if(str_to_int(id_temp, &temp.id) != SUCCESS)
             {
                 printf("Id is to long or write incorrectly\n");
-                free(employees);
-                fclose(input_file);
-                return INPUT_ERROR;
-            }
-            if (str_to_double(salary_temp, &temp.salary) != SUCCESS)
-            {
-                printf("Salary is to long or write incorrectly\n");
                 free(employees);
                 fclose(input_file);
                 return INPUT_ERROR;
@@ -53,6 +58,13 @@ int main(int argc, char* argv[])
             }
             strcpy(temp.name, name_temp);
             strcpy(temp.surname, surname_temp);
+            if (str_to_double(salary_temp, &temp.salary) != SUCCESS)
+            {
+                printf("Salary is to long or write incorrectly\n");
+                free(employees);
+                fclose(input_file);
+                return INPUT_ERROR;
+            }
 
             if (count >= capacity) {
                 capacity *= 2;

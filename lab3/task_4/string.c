@@ -64,7 +64,7 @@ void concat_string(String* str_1, String* str_2)
     if (data)
     {
         strcpy(data, str_1->data);
-        strcpy(data, str_2->data);
+        strcat(data, str_2->data);
         free(str_1->data);
         str_1->data = data;
         str_1->lenght = str_1->lenght + str_2->lenght;

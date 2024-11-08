@@ -75,6 +75,7 @@ enum status read_from_file(FILE* input, Student** students, int* size, int* capa
         enum status f = validate_id(id, &(*students)[*size].id);
         if (f != SUCCESS)
         {
+            // free
             return INPUT_ERROR;
         }
         if (((*students)[*size].id < 0))
@@ -138,14 +139,15 @@ void print_array(Student* students, int size)
 {
     for (int i = 0; i < size; ++i)
     {
-        printf("ID: %d %s %s %s ", students[i].id,
+        printf("ID: %d | Name: %s | Surname: %s | Group: %s\nMarks: ", students[i].id,
                students[i].name, students[i].surname,
                students[i].group);
         for (int j = 0; j < 5; ++j)
         {
             printf("%c ", students[i].marks[j]);
         }
-        printf("\n%lf\n", students[i].average_score);
+        printf("\nAverage score: %lf\n", students[i].average_score);
+        printf("<------------------------------------------------------->\n");
     }
 }
 

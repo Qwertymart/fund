@@ -64,6 +64,11 @@ int main() {
                     printf("House number is too long or write incorrectly\n");
                     break;
                 }
+                if (house_number < 1)
+                {
+                    printf("Input error\n");
+                    break;
+                }
 
                 printf("Building: ");
                 scanf("%10s", building);
@@ -83,11 +88,16 @@ int main() {
                     printf("Apartment is too long or write incorrectly\n");
                     break;
                 }
+                if (apartment < 1)
+                {
+                    printf("Input error\n");
+                    break;
+                }
 
                 printf("Postal code: ");
                 scanf("%10s", postal_code);
                 flush_input();
-                if (strlen(postal_code) > 9)
+                if (strlen(postal_code) != 6)
                 {
                     printf("Postal code is too long\n");
                     break;
@@ -102,6 +112,11 @@ int main() {
                     printf("Weight is too long or write incorrectly\n");
                     break;
                 }
+                if (weight < 0)
+                {
+                    printf("Input error\n");
+                    break;
+                }
 
                 printf("Mail ID (14 digits): ");
                 scanf("%15s", id);
@@ -112,43 +127,50 @@ int main() {
                     break;
                 }
 
-                int creation_day, creation_month, creation_year,
-                creation_hour, creation_minute, creation_second;
+                int creation_day, creation_month, creation_year, creation_hour, creation_minute, creation_second;
+                int delivery_day, delivery_month, delivery_year, delivery_hour, delivery_minute, delivery_second;
+                char buffer[50];
 
                 printf("Creation time (dd:MM:yyyy hh:mm:ss): ");
-                if (scanf("%d:%d:%d %d:%d:%d", &creation_day, &creation_month, &creation_year, &creation_hour, &creation_minute, &creation_second) != 6)
-                {
+                if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+                    if (!is_valid_date(buffer)) {
+                        printf("Input error: invalid characters\n");
+                        break;
+                    }
+                    if (sscanf(buffer, "%d:%d:%d %d:%d:%d", &creation_day, &creation_month, &creation_year,
+                               &creation_hour, &creation_minute, &creation_second) != 6) {
+                        printf("Input error: format mismatch\n");
+                        break;
+                    }
+                } else {
                     printf("Input error\n");
                     break;
                 }
+
                 if (!valid_date(creation_day, creation_month, creation_year, creation_hour, creation_minute, creation_second)) {
-                    printf("Data incorrectly\n");
+                    printf("Creation date is incorrect\n");
                     break;
                 }
                 sprintf(creation_time, "%02d:%02d:%04d %02d:%02d:%02d", creation_day, creation_month, creation_year, creation_hour, creation_minute, creation_second);
-                flush_input();
 
-                int delivery_day, delivery_month, delivery_year,
-                        delivery_hour, delivery_minute, delivery_second;
-
-                char buffer[50];
                 printf("Delivery time (dd:MM:yyyy hh:mm:ss): ");
-                if (fgets(buffer, sizeof(buffer), stdin) != NULL)
-                {
-                    if (sscanf(buffer, "%d:%d:%d %d:%d:%d",
-                               &delivery_day, &delivery_month, &delivery_year,
-                               &delivery_hour, &delivery_minute, &delivery_second) != 6) {
-                        printf("Input error\n");
+                if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+                    if (!is_valid_date(buffer)) {
+                        printf("Input error: invalid characters\n");
                         break;
                     }
-                }
-                else
-                {
+                    if (sscanf(buffer, "%d:%d:%d %d:%d:%d", &delivery_day, &delivery_month, &delivery_year,
+                               &delivery_hour, &delivery_minute, &delivery_second) != 6) {
+                        printf("Input error: format mismatch\n");
+                        break;
+                    }
+                } else {
                     printf("Input error\n");
                     break;
                 }
+
                 if (!valid_date(delivery_day, delivery_month, delivery_year, delivery_hour, delivery_minute, delivery_second)) {
-                    printf("Data incorrectly\n");
+                    printf("Delivery date is incorrect\n");
                     break;
                 }
                 sprintf(delivery_time, "%02d:%02d:%04d %02d:%02d:%02d", delivery_day, delivery_month, delivery_year, delivery_hour, delivery_minute, delivery_second);
@@ -172,7 +194,6 @@ int main() {
                 printf("Enter the ID of the mail to delete: ");
                 scanf("%14s", id);
                 delete_mail(&post, id);
-                printf("Mail with ID %s deleted.\n", id);
                 break;
 
             case 3:
@@ -219,4 +240,37 @@ int main() {
                 break;
         }
     }
+    return 0;
 }
+
+//int main() {
+//    String str1 = create_string("Hello");
+//    printf("Created string: %s (Length: %d)\n", str1.data, str1.lenght);
+//
+//    String str_dup = duplicate_string(&str1);
+//    printf("Duplicated string: %s (Length: %d)\n", str_dup.data, str_dup.lenght);
+//
+//    String str2 = create_string("World");
+//    copy_string(&str2, &str1);
+//    printf("Copied string: %s (Length: %d)\n", str2.data, str2.lenght);
+//
+//    String str3 = create_string("Helloo");
+//    printf("Compare str1 and str3: %d\n", compare_string(&str1, &str3));
+//    printf("Compare str1 and str2: %d\n", compare_string(&str1, &str2));
+//
+//    printf("str1 equals str2: %d\n", equals_string(&str1, &str2));
+//    printf("str1 equals str3: %d\n", equals_string(&str1, &str3));
+//
+//    String str4 = create_string(" World");
+//    concat_string(&str1, &str4);
+//    printf("Concatenated string: %s (Length: %d)\n", str1.data, str1.lenght);
+//
+//    delete_string(&str1);
+//    delete_string(&str2);
+//    delete_string(&str3);
+//    delete_string(&str4);
+//    delete_string(&str_dup);
+//    printf("After delete, str1 data: %p, length: %d\n", (void*)str1.data, str1.lenght);
+//
+//    return 0;
+//}
