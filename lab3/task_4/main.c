@@ -184,7 +184,11 @@ int main() {
 
                 Address recipient = {create_string(city), create_string(street), house_number, create_string(building), apartment, create_string(postal_code)};
                 Mail new_mail = create_mail(recipient, weight, id, creation_time, delivery_time);
-                add_mail(&post, new_mail);
+                if (add_mail(&post, new_mail) == MEMORY_ERROR)
+                {
+                    delete_mail(&post, new_mail.id.data);
+                    return MEMORY_ERROR;
+                }
                 sort_mails(&post);
                 printf("Mail added and sorted.\n");
                 break;
@@ -240,7 +244,6 @@ int main() {
                 break;
         }
     }
-    return 0;
 }
 
 //int main() {

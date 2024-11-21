@@ -1,10 +1,10 @@
 #include "header.h"
 
-void add_mail(Post *post, Mail mail)
+enum status add_mail(Post *post, Mail mail)
 {
     if (post->mails == NULL)
     {
-        post->mails = (Mail*) malloc(sizeof(Mail) * 10);
+        post->mails = (Mail*) malloc(sizeof(Mail) * 1);
         if (post->mails)
         {
             post->mail_count = 1;
@@ -19,32 +19,45 @@ void add_mail(Post *post, Mail mail)
             post->mails = temp;
             post->mails[post->mail_count++] = mail;
         }
+        else
+        {
+            delete_mail(post, NULL);
+            return MEMORY_ERROR;
+        }
+
     }
+    return SUCCESS;
 }
 
 void delete_mail(Post *post, const char* id)
 {
-    for (int i = 0; i < post->mail_count; ++i)
+    if (id == NULL)
     {
-        if (strcmp(post->mails[i].id.data, id) == 0)
+        for (int i = 0; i < post->mail_count; ++i)
         {
             delete_string(&post->mails[i].id);
             delete_string(&post->mails[i].creation_time);
             delete_string(&post->mails[i].delivery_time);
             post->mails[i] = post->mails[post->mail_count - 1];
             post->mail_count--;
-            Mail* temp = (Mail *) realloc(post->mails, post->mail_count * sizeof(Mail));
-            if (temp)
-            {
-                post->mails = temp;
-                printf("Mail with ID %s removed.\n", id);
-                return;
-            }
-            printf("Mail with ID %s not removed.\n", id);
-            return;
         }
     }
-    printf("Mail with ID %s not found.\n", id);
+    else
+    {
+        for (int i = 0; i < post->mail_count; ++i)
+        {
+            if (strcmp(post->mails[i].id.data, id) == 0)
+            {
+                delete_string(&post->mails[i].id);
+                delete_string(&post->mails[i].creation_time);
+                delete_string(&post->mails[i].delivery_time);
+                post->mails[i] = post->mails[post->mail_count - 1];
+                post->mail_count--;
+                return;
+            }
+        }
+        printf("Mail with ID %s not found.\n", id);
+    }
 }
 
 Mail create_mail(Address recipient, double weight, char* id,

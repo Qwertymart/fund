@@ -56,7 +56,7 @@ void copy_string(String* str_1, String* str_2);
 String duplicate_string(String* str);
 void concat_string(String* str_1, String* str_2);
 
-void add_mail(Post *post, Mail mail);
+enum status add_mail(Post *post, Mail mail);
 void delete_mail(Post *post, const char* id);
 Mail create_mail(Address recipient, double weight, char* id,
                  char* creation_time, char* delivery_time);

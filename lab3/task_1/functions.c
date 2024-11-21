@@ -44,7 +44,7 @@ int multiply(int a, int b)
     {
         if (b & 1)
         {
-            res += sum(res, a);
+            res = sum(res, a);
         }
         a<<=1;
         b>>=1;
